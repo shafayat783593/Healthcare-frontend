@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ComponentProps } from "react";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
@@ -14,6 +15,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/app/validation";
+import { useLogin } from "@/hooks";
+import { toast } from "../ui/toast";
+import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 type LoginFormData = {
   email: string;
@@ -23,13 +28,15 @@ type LoginFormData = {
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
-  const [showPassword, setShowPassword] = useState(false);
+}: ComponentProps<"form">) {
+  const { mutateAsync: login, isPending: loginPending } = useLogin();
 
+  const [showPassword, setShowPassword] = useState(false);
+const userRouter = useRouter()
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "shafayat783@gmail.com",
+      password: "12345678Un@",
     } as LoginFormData,
 
     validators: {
@@ -37,21 +44,39 @@ export function LoginForm({
     },
 
     onSubmit: async ({ value }) => {
-      console.log(value);
+      try {
+        const res = await login({
+          email: value.email,
+          password: value.password,
+        });
 
-      // API call
-      // await loginUser(value);
+        toast.add({
+          title: "Login Successful",
+          description: "You have been logged in successfully.",
+          type: "success",
+        })
+        console.log(res);
+        userRouter.push("/")
+
+      } catch (error) {
+        console.log(error);
+        toast.add({
+          title: "Login Failed",
+          description: "Invalid email or password.",
+          type: "error",
+        })
+      }
     },
   });
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        form.handleSubmit();
+        await form.handleSubmit();
       }}
       {...props}
     >
@@ -92,7 +117,7 @@ export function LoginForm({
                   className={cn(
                     "h-11 transition-colors",
                     hasError &&
-                      "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20"
+                    "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20"
                   )}
                 />
 
@@ -107,8 +132,7 @@ export function LoginForm({
                           <AlertCircle className="mt-0.5 size-3.5 shrink-0" />
 
                           <span>
-                            {error?.message ??
-                              "Invalid email"}
+                            {error?.message ?? "Invalid email"}
                           </span>
                         </div>
                       )
@@ -141,7 +165,6 @@ export function LoginForm({
                   </button>
                 </div>
 
-                {/* Password input */}
                 <div className="relative">
                   <Input
                     id={field.name}
@@ -156,7 +179,7 @@ export function LoginForm({
                     className={cn(
                       "h-11 pr-11 transition-colors",
                       hasError &&
-                        "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20"
+                      "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20"
                     )}
                   />
 
@@ -180,7 +203,6 @@ export function LoginForm({
                   </button>
                 </div>
 
-                {/* Password errors */}
                 {hasError && (
                   <div className="flex flex-col gap-1.5">
                     {field.state.meta.errors.map(
@@ -192,8 +214,7 @@ export function LoginForm({
                           <AlertCircle className="mt-0.5 size-3.5 shrink-0" />
 
                           <span>
-                            {error?.message ??
-                              "Invalid password"}
+                            {error?.message ?? "Invalid password"}
                           </span>
                         </div>
                       )
@@ -202,8 +223,7 @@ export function LoginForm({
                 )}
 
                 <FieldDescription>
-                  Password must be at least 8 characters
-                  long.
+                  Password must be at least 8 characters long.
                 </FieldDescription>
               </Field>
             );
@@ -215,10 +235,9 @@ export function LoginForm({
           <Button
             type="submit"
             className="h-11 w-full"
-            disabled={form.state.isSubmitting}
+            disabled={loginPending}
           >
-            {form.state.isSubmitting
-              ? "Logging in..."
+            {loginPending ? <><Spinner />submitting</>
               : "Login"}
           </Button>
         </Field>
