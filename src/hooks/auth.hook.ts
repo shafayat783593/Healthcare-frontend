@@ -1,4 +1,4 @@
-import { getLoggedInUser, logout, userLogin } from "@/api";
+import {  googleOAuth, userLogin, userLogout, userRegistration } from "@/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 
@@ -11,17 +11,30 @@ export function useLogin(){
 export function useLogout(){
 
     return useMutation({
-        mutationFn:logout
+        mutationFn:userLogout
     })
 }
-export function useGetLoggedInUser(){
+// export function useGetLoggedInUser(){
 
-  return useQuery({
-    queryKey:["user"],
-    queryFn:getLoggedInUser,
-    retry:false
+//   return useQuery({
+//     queryKey:["user"],
+//     queryFn:userLogin,
+//     retry:false
 
-  })
+//   })
+// }
+
+
+export function useRegistration() {
+  return useMutation({
+    mutationFn: userRegistration,
+  });
 }
 
+
+export function useGoogleOAuth() {
+  return useMutation({
+    mutationFn: googleOAuth,
+  });
+}
 
