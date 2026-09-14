@@ -277,7 +277,7 @@ export function RegisterForm() {
         </FieldGroup>
       </form>
 
-      <FieldSeparator>Or continue with</FieldSeparator>
+      <FieldSeparator className=" py-10">Or continue with</FieldSeparator>
 
       <GoogleLoginComponent />
 

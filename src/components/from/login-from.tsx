@@ -73,7 +73,7 @@ export function LoginForm({
 
   return (
 
-    <div>
+    <div >
 
       <form
         className={cn("flex flex-col gap-6", className)}
@@ -248,7 +248,7 @@ export function LoginForm({
           </Field>
         </FieldGroup>
       </form>
-      <FieldSeparator>Or continue with</FieldSeparator>
+      <FieldSeparator className=" py-10">Or continue with</FieldSeparator>
 
       <GoogleLoginComponent />
     </div>
