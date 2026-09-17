@@ -15,11 +15,12 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { useEffect, useState } from "react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { toast } from "../ui/toast";
-import { useVerifyAccount } from "@/hooks";
+import { useVerifyDoctorAccount, useVerifyPatientAccount } from "@/hooks";
+
 
 const RESEND_COOLDOWN = 120;
 
-export default function VerifyAccountForm() {
+export default function VerifyAccountForm({ mode }: { mode: "doctor" | "patient" }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -27,9 +28,11 @@ export default function VerifyAccountForm() {
   const [isInvalid, setIsInvalid] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
 
-  const { mutate: verify, isPending: verifyPending } = useVerifyAccount();
-
+  const { mutate: verifyDoctor, isPending: verifyDoctorPending } = useVerifyDoctorAccount();
+  const { mutate: verifyPatient, isPending: verifyPatientPending } = useVerifyPatientAccount();
+  const verify = mode === "doctor" ? verifyDoctor : verifyPatient;
   const email = searchParams.get("email") || "";
+
 
   useEffect(() => {
     if (!email) {
@@ -70,12 +73,24 @@ export default function VerifyAccountForm() {
           });
         }
 
-        toast.add({
-          title: "Verification Successful",
-          description: "Welcome onboard",
-          type: "success",
-        });
-        router.push("/");
+        if (mode === "doctor") {
+
+          toast.add({
+            title: "Verification Successful",
+            description: "An admin will Apporve Your account .This may take time .Place check you email in few hours",
+            type: "success",
+          });
+          router.push("/");
+          return;
+        }
+        else {
+          toast.add({
+            title: "Verification Successful",
+            description: "Welcome onboard",
+            type: "success",
+          });
+          router.push("/");
+        }
       },
       onError: (err) => {
         toast.add({

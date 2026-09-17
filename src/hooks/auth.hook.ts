@@ -31,7 +31,7 @@ export function useRegistration() {
   });
 }
 
-export function useVerifyAccount() {
+export function useVerifyPatientAccount() {
   return useMutation({
     mutationFn: verifyAccount,
   });

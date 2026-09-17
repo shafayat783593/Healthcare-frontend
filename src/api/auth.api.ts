@@ -1,4 +1,4 @@
-import { LoginPayload, RegistrationPayload, VerifyAccountPayload } from "@/components/types/auth.type";
+import { LoginPayload, RegistrationPayload, VerifyAccountPayload } from  "@/components/types";
 import apiClient from "@/lib/apiClient";
 
 
@@ -27,3 +27,5 @@ export function googleOAuth(payload: { idToken: string }) {
 export function verifyAccount(payload: VerifyAccountPayload) {
   return apiClient("/auth/verify-email", { method: "POST", body: payload });
 }
+
+

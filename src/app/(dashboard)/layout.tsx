@@ -1,8 +1,11 @@
-import React from 'react'
+import AuthGard from '@/components/auth/auth-guard'
+import React, { ReactNode } from 'react'
 
-function layout() {
+function layout({children}:{children:ReactNode}) {
   return (
-    <div>layout</div>
+    <AuthGard>
+      {children}
+    </AuthGard>
   )
 }
 

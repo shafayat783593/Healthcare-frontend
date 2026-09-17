@@ -1,5 +1,6 @@
 "use client";
 
+import { UserRole } from "@/components/types";
 import { toast } from "@/components/ui/toast";
 import { useGetLoggedInUser, useLogout } from "@/hooks";
 import { Button } from "@base-ui/react";
@@ -8,6 +9,7 @@ import { ArrowRight, HeartPulse, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { string } from "zod";
 
 const routes = [
   { name: "Home", url: "/" },
@@ -15,10 +17,17 @@ const routes = [
   { name: "Our services", url: "/#services" },
   { name: "Contact", url: "/#contact" },
 ];
+const dashboardRoute: Record<UserRole, string > ={
+  SUPERADMIN: "/admin",
+  ADMIN: "/admin",
+  DOCTOR: "/doctor",
+  PATIENT:"/patient"
+}
 
 function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+
 
 
   const { data, isLoading } = useGetLoggedInUser()
@@ -32,6 +41,8 @@ function Header() {
       ? pathname === "/"
       : pathname.startsWith(routePath);
   };
+
+  const role :UserRole = !!data?.data && data?.data.role
 
   const handelLogout = () => {
     logout(undefined, {
@@ -89,6 +100,11 @@ function Header() {
               {route.name}
             </Link>
           ))}
+          {
+            role && <Link href={dashboardRoute[role]}>
+              Dashboard
+            </Link>
+          }
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">

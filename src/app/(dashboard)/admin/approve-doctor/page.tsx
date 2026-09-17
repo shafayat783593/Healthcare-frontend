@@ -1,8 +1,15 @@
+import DoctorApprovalTabs from '@/components/modules/doctor-approval/doctor-approval-tabs'
 import React from 'react'
 
 function doctorApporved() {
   return (
-    <div>doctorApporved</div>
+    <div>
+      <div>
+        <h1>Doctor Approval</h1>
+        <p>please review and make sure the given data is real</p>
+      </div>
+      <DoctorApprovalTabs/>
+    </div>
   )
 }
 

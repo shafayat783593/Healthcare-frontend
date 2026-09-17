@@ -1,3 +1,5 @@
+
+
 import VerifyAccount from "@/components/from/verify-Account"
 import { GalleryVerticalEnd } from "lucide-react"
 import { Suspense } from "react"
@@ -18,7 +20,7 @@ export default function verifyAccountPage() {
                     <div className="w-full max-w-xs">
                         <Suspense fallback={<p>Loading..</p>}>
 
-                            <VerifyAccount mode="patient"/>
+                            <VerifyAccount mode="doctor"/>
 
                         </Suspense>
                     </div>

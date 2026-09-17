@@ -4,8 +4,8 @@ import React, { ReactNode } from 'react'
 
 function layout({children}:{children:ReactNode}) {
   return (
-    <RoleGuard roles={["ADMIN"]}>
-      <DashboardShell role='ADMIN' >
+    <RoleGuard roles={["PATIENT"]}>
+      <DashboardShell role='PATIENT' >
 
       {children}
       </DashboardShell>
