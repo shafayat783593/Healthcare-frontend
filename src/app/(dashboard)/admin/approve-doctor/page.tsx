@@ -1,3 +1,4 @@
+import DoctorApprovalTable from '@/components/modules/doctor-approval/doctor-approval-table'
 import DoctorApprovalTabs from '@/components/modules/doctor-approval/doctor-approval-tabs'
 import React from 'react'
 

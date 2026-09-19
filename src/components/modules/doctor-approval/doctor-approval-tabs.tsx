@@ -1,35 +1,56 @@
-import React from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+"use client";
 
-function DoctorApprovalTabs() {
-    return (
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DoctorApprovalTable from "./doctor-approval-table";
+import { Suspense, useState } from "react";
+import DoctorApprovalTableLoading from "./doctor-approval-table-loading";
+import { Input } from "@/components/ui/input";
+import DoctorReviewSheet from "./doctor-review-sheet";
+import { DoctorParams, DoctorVerificationStatus } from "@/components/types";
 
+const verificationStatus: ["ALL" | DoctorVerificationStatus, string][] = [
+  ["APPROVED", "Approved"],
+  ["PENDING", "Pending"],
+  ["REJECTED", "Rejected"],
+  ["ALL", "All"],
+];
 
+export default function DoctorApprovalTabs() {
+  const [tab, setTab] = useState<"ALL" | DoctorVerificationStatus>("ALL");
+  const [selectedId, setSelectedId] = useState("");
 
-        <Tabs defaultValue="account" className="">
-            <TabsList>
-                <TabsTrigger value="pending">Pending</TabsTrigger>
-                <TabsTrigger value="approved">Approved</TabsTrigger>
-                <TabsTrigger value="rejected">Rejected</TabsTrigger>
-                <TabsTrigger value="all">all</TabsTrigger>
-            </TabsList>
-            <TabsContent value="pending">
-                Pending Table
-            </TabsContent>
-            <TabsContent value="pending">
-                <DoctorApprovalTabs />
-            </TabsContent>
-            <TabsContent value="approved">
-                <DoctorApprovalTabs />
-            </TabsContent>
-            <TabsContent value="rejected">
-                <DoctorApprovalTabs />
-            </TabsContent>
-            <TabsContent value="all">
-                <DoctorApprovalTabs />
-            </TabsContent>
+  const queryParams: DoctorParams = {
+    page: 1,
+    limit: 10,
+    ...(tab === "ALL" ? {} : { verificationStatus: tab }),
+  };
+
+  return (
+    <>
+      <div className="flex justify-between my-5">
+        <div>
+          <Input type="search" placeholder="Search by name or email" />
+        </div>
+        <Tabs value={tab} onValueChange={(value) => setTab(value)}>
+          <TabsList>
+            {verificationStatus.map(([value, label]) => (
+              <TabsTrigger key={value} value={value}>
+                {label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
         </Tabs>
-    )
-}
+      </div>
 
-export default DoctorApprovalTabs
+      <Suspense fallback={<DoctorApprovalTableLoading />}>
+        <DoctorApprovalTable {...queryParams} handleReview={setSelectedId} />
+      </Suspense>
+
+      <DoctorReviewSheet
+        selectedId={selectedId}
+        onClose={() => setSelectedId("")}
+        {...queryParams}
+      />
+    </>
+  );
+}
